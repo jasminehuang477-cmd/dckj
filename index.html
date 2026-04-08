@@ -1,1015 +1,166 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#FF69B4">
-  <title>🕊️ 魔性丑萌鸽子消消消</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>厦门点触科技股份有限公司 · AI-Native游戏岗位招聘</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: white;
-      overflow-x: hidden;
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(145deg, #020612, #08132b 58%, #101a40);
+      color: #edf5ff;
+      line-height: 1.6;
     }
-    
-    .top-bar {
-      width: 100%;
-      max-width: 500px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 15px;
-      background: rgba(255,255,255,0.08);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+    .container {
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 28px 16px 60px;
     }
-    
-    .top-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 14px;
+    .card {
+      background: rgba(16, 26, 60, 0.78);
+      border: 1px solid rgba(80, 180, 255, 0.24);
+      border-radius: 14px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.36);
+      margin-bottom: 24px;
+      padding: 26px;
+      backdrop-filter: blur(6px);
     }
-    
-    .level-badge {
-      background: linear-gradient(135deg, #FF69B4, #FF1493);
+    h1, h2 {
+      margin: 0 0 14px;
+      letter-spacing: 0.04em;
+    }
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 2.9rem);
+      color: #9df2ff;
+    }
+    h2 {
+      font-size: 1.36rem;
+      color: #a3eaff;
+      margin-top: 12px;
+    }
+    p, li {
+      font-size: 1rem;
+      color: #e5f1ff;
+    }
+    ul {
+      margin: 8px 0 14px 22px;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 10px;
       padding: 6px 12px;
-      border-radius: 15px;
-      font-weight: bold;
+      border-radius: 999px;
+      background: linear-gradient(140deg, rgba(36, 179, 255, 0.2), rgba(84, 122, 255, 0.28));
+      color: #dcf8ff;
+      border: 1px solid #3fb4ff;
+      font-size: 0.95rem;
     }
-    
-    .energy-display { color: #FFD700; }
-    .energy-display.low { color: #ff6b6b; }
-    
-    .menu-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      padding: 30px;
-      text-align: center;
+    .job-highlight {
+      background: linear-gradient(140deg, rgba(110, 247, 214, 0.1), rgba(157, 242, 255, 0.1));
+      border-left: 4px solid #6ef7d6;
+      padding: 16px 20px;
+      margin: 16px 0;
+      border-radius: 8px;
     }
-    
-    .game-title { font-size: 36px; margin: 20px 0 10px; }
-    .game-subtitle { color: #FFB6C1; margin-bottom: 30px; }
-    
-    .menu-btn {
-      background: linear-gradient(135deg, #FF69B4, #FF1493);
-      color: white;
-      border: none;
-      padding: 16px 50px;
-      border-radius: 30px;
-      font-size: 18px;
-      font-weight: bold;
-      margin: 8px;
-      cursor: pointer;
-      transition: transform 0.2s;
+    .job-highlight h3 {
+      color: #6ef7d6;
+      font-size: 1.2rem;
+      margin: 0 0 8px;
     }
-    .menu-btn:active { transform: scale(0.95); }
-    .menu-btn.secondary {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.2);
+    .job-highlight p {
+      margin: 0;
+      font-weight: 500;
     }
-    
-    .game-screen { display: none; flex-direction: column; align-items: center; flex: 1; padding: 15px; width: 100%; max-width: 500px; }
-    .game-screen.active { display: flex; }
-    
-    .board-container {
-      background: rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 12px;
-    }
-    
-    .board {
+    .grid {
       display: grid;
-      gap: 4px;
-      background: rgba(0,0,0,0.3);
-      border-radius: 10px;
-      padding: 4px;
+      grid-template-columns: minmax(280px, 1fr) minmax(260px, 360px);
+      gap: 20px;
     }
-    
-    .cell {
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      font-size: 24px;
-      cursor: pointer;
-      transition: all 0.15s;
-      min-width: 40px;
-      min-height: 40px;
-      background: rgba(255,255,255,0.1);
-      user-select: none;
-    }
-    .cell:active { transform: scale(0.9); }
-    
-    /* 区域颜色 */
-    .region-0 { background: rgba(255, 105, 180, 0.6); }
-    .region-1 { background: rgba(100, 149, 237, 0.6); }
-    .region-2 { background: rgba(144, 238, 144, 0.6); }
-    .region-3 { background: rgba(255, 255, 150, 0.6); }
-    .region-4 { background: rgba(221, 160, 221, 0.6); }
-    .region-5 { background: rgba(255, 218, 185, 0.6); }
-    .region-6 { background: rgba(176, 224, 230, 0.6); }
-    .region-7 { background: rgba(255, 182, 193, 0.6); }
-    
-    .cell.pigeon { background: rgba(255,255,255,0.9) !important; }
-    .cell.pigeon::after { content: '🕊️'; font-size: 20px; }
-    
-    .cell.excluded { background: rgba(255, 80, 80, 0.4) !important; }
-    .cell.excluded::after { content: '❌'; font-size: 16px; }
-    
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-4px); }
-      75% { transform: translateX(4px); }
-    }
-    .cell.wrong { animation: shake 0.3s; background: rgba(255, 0, 0, 0.5) !important; }
-    
-    @keyframes popIn {
-      0% { transform: scale(0); }
-      70% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-    .cell.correct { animation: popIn 0.3s; }
-    
-    .controls { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
-    .ctrl-btn {
-      background: rgba(255,255,255,0.15);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 10px 18px;
-      border-radius: 20px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .ctrl-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.25); }
-    .ctrl-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    
-    .rules {
-      margin-top: 20px;
-      padding: 15px;
-      background: rgba(255,255,255,0.05);
+    .qr-box {
+      text-align: center;
+      border: 1px dashed rgba(151, 220, 255, 0.35);
+      margin-top: 12px;
+      padding: 16px;
       border-radius: 12px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.7);
+      background: rgba(12, 24, 52, 0.72);
+    }
+    .qr-box img {
+      width: 220px;
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid #2f547b;
+    }
+    .note {
+      color: #b5ddff;
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+    .footer {
+      margin-top: 18px;
+      font-size: 0.9rem;
+      color: #89b8f8;
       text-align: center;
-      max-width: 350px;
     }
-    .rules strong { color: #FF69B4; }
-    
-    .overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.85);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s;
-    }
-    .overlay.show { opacity: 1; visibility: visible; }
-    
-    .modal {
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      border-radius: 20px;
-      padding: 30px;
-      text-align: center;
-      max-width: 300px;
-      border: 1px solid rgba(255,255,255,0.1);
-      transform: scale(0.9);
-      transition: transform 0.3s;
-    }
-    .overlay.show .modal { transform: scale(1); }
-    .modal-icon { font-size: 60px; margin-bottom: 15px; }
-    .modal h2 { color: #FF69B4; margin-bottom: 10px; }
-    .modal p { color: rgba(255,255,255,0.7); margin-bottom: 20px; }
-    .modal-btn {
-      background: linear-gradient(135deg, #FF69B4, #FF1493);
-      color: white;
-      border: none;
-      padding: 14px 35px;
-      border-radius: 25px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      margin: 5px;
-    }
-    .modal-btn:active { transform: scale(0.95); }
-    .modal-btn.secondary { background: rgba(255,255,255,0.1); }
-    
-    .toast {
-      position: fixed;
-      top: 70px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.85);
-      color: white;
-      padding: 10px 24px;
-      border-radius: 20px;
-      font-size: 14px;
-      z-index: 200;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-    }
-    .toast.show { opacity: 1; }
-    
-    @media (max-width: 400px) {
-      .game-title { font-size: 28px; }
-      .cell { font-size: 20px; min-width: 35px; min-height: 35px; }
+    .highlight {
+      color: #6ef7d6;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-  <!-- 顶部状态栏 -->
-  <div class="top-bar" id="topBar" style="display:none;">
-    <div class="top-item">
-      <span class="level-badge">第 <span id="levelNum">1</span> 关</span>
+  <div class="container">
+    <div class="card">
+      <h1>厦门点触科技股份有限公司 · AI-Native游戏研发·招聘开启</h1>
+      <p class="badge">探索 AI工作流 · Multi-Agent协作 · 下一代游戏科技</p>
+
+      <h2>岗位信息</h2>
+      <div class="job-highlight">
+        <h3>AI-Native 游戏研发研究员</h3>
+        <p>我们是厦门点触科技股份有限公司，致力于打造全AI驱动的游戏研发生态。加入我们，你将成为AI技术在游戏领域的先锋探索者，参与构建未来游戏的无限可能！</p>
+      </div>
+      <p>这是一场颠覆传统的研发冒险，你将深度参与：</p>
+      <ul>
+        <li><strong>AI-Native工作流搭建：</strong> 从零构建AI主导的游戏开发流程，优化效率与创意输出</li>
+        <li><strong>Multi-Agent协作验证：</strong> 探索多智能体系统在复杂游戏需求中的实际应用与可行性</li>
+        <li><strong>前沿AI技术落地：</strong> 无限探索AI在游戏中的创新运用，从生成式内容到智能NPC设计</li>
+      </ul>
+      <p>技术研究无边界，创意无限延伸——你的热情将点燃游戏行业的AI革命！</p>
+
+      <p>不限背景、不限学历，只要你具备：</p>
+      <ul>
+        <li><strong>狂热AI热情：</strong> 对AI技术充满学习与研究激情，有实际行动与成果展示</li>
+        <li><strong>强动手执行力：</strong> 能快速原型化、落地AI解决方案</li>
+      </ul>
+      <p>（无需现有深度成果，用你的热爱与能力，与我们共同突破极限！）</p>
+
+      <h2>我们提供</h2>
+      <ul>
+        <li>市场竞争力薪资与福利</li>
+        <li>高端舒适办公环境</li>
+        <li>自由创新氛围：零PUA、零KPI，自定义任务与时间</li>
+        <li>充足研发资源：云算力、API预算、实验设备无限供应</li>
+        <li>精英AI同伴团队，共同攻克技术难题</li>
+      </ul>
     </div>
-    <div class="top-item energy-display" id="energyContainer">
-      <span>⚡</span>
-      <span id="energyNum">30</span>
-    </div>
-    <div class="top-item">
-      <span>❤️</span>
-      <span id="errorNum">3</span>
-      <span>/</span>
-      <span style="opacity:0.5">3</span>
-    </div>
-  </div>
-  
-  <!-- 主菜单 -->
-  <div class="menu-screen" id="menuScreen">
-    <div style="font-size:80px;margin:20px 0;">🕊️</div>
-    <h1 class="game-title">魔性丑萌鸽子消消消</h1>
-    <p class="game-subtitle">区域数独 · 找鸽子</p>
-    
-    <div class="top-item" style="margin:20px 0;">
-      <span>⚡ 体力:</span>
-      <span id="menuEnergy" style="color:#FFD700;font-weight:bold;">30</span>
-    </div>
-    
-    <button class="menu-btn" id="btnPlay">开始挑战</button>
-    <button class="menu-btn secondary" id="btnContinue">继续游戏</button>
-  </div>
-  
-  <!-- 游戏界面 -->
-  <div class="game-screen" id="gameScreen">
-    <div class="board-container">
-      <div id="board" class="board"></div>
-    </div>
-    
-    <div class="controls">
-      <button class="ctrl-btn" id="btnUndo" disabled>↩ 撤销</button>
-      <button class="ctrl-btn" id="btnReset">🔄 重置</button>
-      <button class="ctrl-btn" id="btnMenu">🏠 菜单</button>
-    </div>
-    
-    <div class="rules">
-      <strong>🎯 目标</strong>：在每个区域找到正确位置放上鸽子<br><br>
-      📍 每区域1只 | 📍 每行1只 | 📍 每列1只 | 📍 不可相邻<br><br>
-      <strong>单击</strong>排除 | <strong>双击</strong>放置 | ❤️ 3次机会
-    </div>
-  </div>
-  
-  <!-- 胜利弹窗 -->
-  <div class="overlay" id="winOverlay">
-    <div class="modal">
-      <div class="modal-icon">🏆</div>
-      <h2>恭喜过关!</h2>
-      <p>太厉害了~继续加油!</p>
-      <button class="modal-btn" id="btnNext">下一关</button>
-    </div>
-  </div>
-  
-  <!-- 失败弹窗 -->
-  <div class="overlay" id="failOverlay">
-    <div class="modal">
-      <div class="modal-icon">💔</div>
-      <h2>挑战失败</h2>
-      <p id="failMsg">错误次数已达上限!</p>
-      <div>
-        <button class="modal-btn" id="btnRetry">重新挑战</button>
-        <button class="modal-btn secondary" id="btnFailMenu">返回菜单</button>
+
+    <div class="grid">
+      <div class="card">
+        <h2>联系我们</h2>
+        <p>立即投递简历，或扫码加微信：</p>
+        <p class="highlight">备注“AI + 姓名”，分享你的AI项目/想法。</p>
+        <p>开启你的AI游戏研发之旅！</p>
+      </div>
+
+      <div class="card qr-box">
+        <h2>扫码加微信</h2>
+        <img src="wx_qr.png" alt="招聘负责人微信二维码">
       </div>
     </div>
-  </div>
-  
-  <!-- 体力不足弹窗 -->
-  <div class="overlay" id="noEnergyOverlay">
-    <div class="modal">
-      <div class="modal-icon">😴</div>
-      <h2>体力不足</h2>
-      <p>休息一下，体力会慢慢恢复哦~</p>
-      <button class="modal-btn" id="btnNoEnergy">知道了</button>
+
+    <div class="footer">
+      你的AI游戏冒险，从这里起航。欢迎热爱研发、敢想敢做的你加入！
     </div>
   </div>
-  
-  <!-- Toast -->
-  <div id="toast" class="toast"></div>
-  
-  <script>
-    // ============================================
-    // 配置
-    // ============================================
-    const CONFIG = {
-      STORAGE_KEY: 'pigeonPuzzle_v4',
-      INITIAL_ENERGY: 30,
-      ENERGY_COST: 5,
-      MAX_ENERGY: 60,
-      ENERGY_RECOVERY_MS: 6 * 60 * 1000,
-      MAX_ERRORS: 3,
-      DOUBLE_CLICK_DELAY: 350,
-      MAX_GENERATION_ATTEMPTS: 50
-    };
-    
-    // ============================================
-    // 游戏状态
-    // ============================================
-    let state = {
-      level: 1,
-      boardSize: 4,
-      energy: CONFIG.INITIAL_ENERGY,
-      lastEnergyTime: Date.now(),
-      
-      // 棋盘数据
-      regions: [],      // 区域ID
-      solution: [],     // 正确答案
-      playerBoard: [],  // 玩家放置的鸽子
-      excluded: [],     // 排除标记
-      
-      // 游戏状态
-      errorCount: 0,
-      history: [],
-      isPlaying: false
-    };
-    
-    // 点击状态
-    let clickData = {
-      timer: null,
-      count: 0,
-      cell: null
-    };
-    
-    // ============================================
-    // DOM引用
-    // ============================================
-    const boardEl = document.getElementById('board');
-    const levelNumEl = document.getElementById('levelNum');
-    const energyNumEl = document.getElementById('energyNum');
-    const energyContainer = document.getElementById('energyContainer');
-    const menuEnergyEl = document.getElementById('menuEnergy');
-    const errorNumEl = document.getElementById('errorNum');
-    const toastEl = document.getElementById('toast');
-    const menuScreen = document.getElementById('menuScreen');
-    const gameScreen = document.getElementById('gameScreen');
-    const topBar = document.getElementById('topBar');
-    
-    // ============================================
-    // 工具函数
-    // ============================================
-    function showToast(msg, duration = 1500) {
-      toastEl.textContent = msg;
-      toastEl.classList.add('show');
-      setTimeout(() => toastEl.classList.remove('show'), duration);
-    }
-    
-    function showScreen(name) {
-      menuScreen.style.display = 'none';
-      gameScreen.classList.remove('active');
-      topBar.style.display = 'none';
-      
-      if (name === 'menu') {
-        menuScreen.style.display = 'flex';
-        menuEnergyEl.textContent = state.energy;
-      } else if (name === 'game') {
-        gameScreen.classList.add('active');
-        topBar.style.display = 'flex';
-      }
-    }
-    
-    function updateUI() {
-      levelNumEl.textContent = state.level;
-      energyNumEl.textContent = state.energy;
-      menuEnergyEl.textContent = state.energy;
-      errorNumEl.textContent = CONFIG.MAX_ERRORS - state.errorCount;
-      
-      if (state.energy < CONFIG.ENERGY_COST) {
-        energyContainer.classList.add('low');
-      } else {
-        energyContainer.classList.remove('low');
-      }
-    }
-    
-    // ============================================
-    // 数据存储
-    // ============================================
-    function loadData() {
-      try {
-        const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
-        if (saved) {
-          const data = JSON.parse(saved);
-          return {
-            level: Math.max(1, data.level || 1),
-            energy: data.energy || CONFIG.INITIAL_ENERGY,
-            lastEnergyTime: data.lastEnergyTime || Date.now()
-          };
-        }
-      } catch {}
-      return { level: 1, energy: CONFIG.INITIAL_ENERGY, lastEnergyTime: Date.now() };
-    }
-    
-    function saveData() {
-      try {
-        localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify({
-          level: state.level,
-          energy: state.energy,
-          lastEnergyTime: state.lastEnergyTime
-        }));
-      } catch {}
-    }
-    
-    // ============================================
-    // 体力恢复
-    // ============================================
-    function recoverEnergy() {
-      const now = Date.now();
-      const elapsed = now - state.lastEnergyTime;
-      const recovered = Math.floor(elapsed / CONFIG.ENERGY_RECOVERY_MS);
-      
-      if (recovered > 0 && state.energy < CONFIG.MAX_ENERGY) {
-        state.energy = Math.min(state.energy + recovered, CONFIG.MAX_ENERGY);
-        state.lastEnergyTime = now - (elapsed % CONFIG.ENERGY_RECOVERY_MS);
-        saveData();
-        updateUI();
-      }
-    }
-    
-    setInterval(recoverEnergy, 5000);
-    
-    // ============================================
-    // 难度配置
-    // ============================================
-    function getDifficulty() {
-      if (state.level <= 10) return 4;
-      if (state.level <= 30) return 5;
-      if (state.level <= 60) return 6;
-      if (state.level <= 100) return 7;
-      return 8;
-    }
-    
-    // ============================================
-    // 关卡生成 - 正确的实现
-    // ============================================
-    
-    /**
-     * 生成区域 - 确保正好有size个区域，每个区域size个格子
-     * 使用模板方式确保正确性
-     */
-    function generateRegions(size) {
-      const regions = [];
-      for (let r = 0; r < size; r++) {
-        regions[r] = [];
-        for (let c = 0; c < size; c++) {
-          regions[r][c] = -1;
-        }
-      }
-      
-      // 方法：按行分配区域ID
-      // 第0行分配区域0,1,2...（每列一个区域）
-      // 其他行跟随上面的区域ID
-      for (let c = 0; c < size; c++) {
-        regions[0][c] = c;
-      }
-      
-      // 如果size=4，棋盘布局：
-      // 0 1 2 3  (行0)
-      // 0 1 2 3  (行1) - 每列属于同一区域
-      // 0 1 2 3  (行2)
-      // 0 1 2 3  (行3)
-      
-      for (let r = 1; r < size; r++) {
-        for (let c = 0; c < size; c++) {
-          regions[r][c] = regions[0][c];
-        }
-      }
-      
-      // 打乱区域ID，使其不那么规整
-      const ids = Array.from({length: size}, (_, i) => i);
-      for (let i = ids.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [ids[i], ids[j]] = [ids[j], ids[i]];
-      }
-      
-      // 重新映射区域ID
-      const mapping = {};
-      for (let c = 0; c < size; c++) {
-        mapping[regions[0][c]] = ids[c];
-      }
-      
-      for (let r = 0; r < size; r++) {
-        for (let c = 0; c < size; c++) {
-          regions[r][c] = mapping[regions[r][c]];
-        }
-      }
-      
-      return regions;
-    }
-    
-    /**
-     * 检查在某位置放置鸽子是否满足约束
-     */
-    function canPlaceAt(sol, row, col, size) {
-      // 检查行约束：该行只能有1只鸽子
-      for (let c = 0; c < size; c++) {
-        if (sol[row][c]) return false;
-      }
-      
-      // 检查列约束：该列只能有1只鸽子
-      for (let r = 0; r < size; r++) {
-        if (sol[r][col]) return false;
-      }
-      
-      // 检查8方向相邻约束
-      for (let dr = -1; dr <= 1; dr++) {
-        for (let dc = -1; dc <= 1; dc++) {
-          if (dr === 0 && dc === 0) continue;
-          const nr = row + dr, nc = col + dc;
-          if (nr >= 0 && nr < size && nc >= 0 && nc < size) {
-            if (sol[nr][nc]) return false;
-          }
-        }
-      }
-      
-      return true;
-    }
-    
-    /**
-     * 使用回溯算法生成解
-     * 每个区域恰好1只鸽子
-     */
-    function generateSolution(size, regions) {
-      // 统计每个区域的格子
-      const regionCells = {};
-      for (let r = 0; r < size; r++) {
-        for (let c = 0; c < size; c++) {
-          const rid = regions[r][c];
-          if (!regionCells[rid]) regionCells[rid] = [];
-          regionCells[rid].push([r, c]);
-        }
-      }
-      
-      const regionIds = Object.keys(regionCells).map(Number).sort((a, b) => a - b);
-      
-      // 初始化解数组
-      const sol = [];
-      for (let r = 0; r < size; r++) {
-        sol[r] = [];
-        for (let c = 0; c < size; c++) {
-          sol[r][c] = false;
-        }
-      }
-      
-      // 回溯放置
-      function place(regionIndex) {
-        if (regionIndex >= regionIds.length) return true;
-        
-        const rid = regionIds[regionIndex];
-        const cells = regionCells[rid];
-        
-        // 随机打乱格子顺序
-        const shuffled = [...cells];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        
-        for (const [r, c] of shuffled) {
-          if (canPlaceAt(sol, r, c, size)) {
-            sol[r][c] = true;
-            if (place(regionIndex + 1)) return true;
-            sol[r][c] = false;
-          }
-        }
-        
-        return false;
-      }
-      
-      // 尝试多次生成
-      for (let attempt = 0; attempt < CONFIG.MAX_GENERATION_ATTEMPTS; attempt++) {
-        // 清空解
-        for (let r = 0; r < size; r++) {
-          for (let c = 0; c < size; c++) {
-            sol[r][c] = false;
-          }
-        }
-        
-        if (place(0)) {
-          if (validateSolution(sol, regions, size)) {
-            return sol;
-          }
-        }
-      }
-      
-      return null;
-    }
-    
-    /**
-     * 验证解是否有效
-     */
-    function validateSolution(sol, regions, size) {
-      // 统计
-      const regionCount = {};
-      const rowCount = {};
-      const colCount = {};
-      
-      for (let r = 0; r < size; r++) {
-        rowCount[r] = 0;
-        for (let c = 0; c < size; c++) {
-          if (!colCount[c]) colCount[c] = 0;
-          const rid = regions[r][c];
-          regionCount[rid] = (regionCount[rid] || 0) + (sol[r][c] ? 1 : 0);
-          if (sol[r][c]) {
-            rowCount[r]++;
-            colCount[c]++;
-          }
-        }
-      }
-      
-      // 验证每个区域恰好1只
-      for (const count of Object.values(regionCount)) {
-        if (count !== 1) return false;
-      }
-      
-      // 验证每行恰好1只
-      for (const count of Object.values(rowCount)) {
-        if (count !== 1) return false;
-      }
-      
-      // 验证每列恰好1只
-      for (const count of Object.values(colCount)) {
-        if (count !== 1) return false;
-      }
-      
-      return true;
-    }
-    
-    // ============================================
-    // 开始关卡
-    // ============================================
-    function startLevel() {
-      // 检查体力
-      if (state.energy < CONFIG.ENERGY_COST) {
-        document.getElementById('noEnergyOverlay').classList.add('show');
-        return;
-      }
-      
-      // 扣除体力
-      state.energy -= CONFIG.ENERGY_COST;
-      state.lastEnergyTime = Date.now();
-      state.errorCount = 0;
-      state.history = [];
-      state.isPlaying = true;
-      
-      state.boardSize = getDifficulty();
-      
-      // 生成关卡
-      state.regions = generateRegions(state.boardSize);
-      state.solution = generateSolution(state.boardSize, state.regions);
-      
-      if (!state.solution) {
-        showToast('关卡生成中...');
-        setTimeout(startLevel, 300);
-        return;
-      }
-      
-      // 初始化玩家棋盘
-      state.playerBoard = [];
-      state.excluded = [];
-      for (let r = 0; r < state.boardSize; r++) {
-        state.playerBoard[r] = [];
-        state.excluded[r] = [];
-        for (let c = 0; c < state.boardSize; c++) {
-          state.playerBoard[r][c] = false;
-          state.excluded[r][c] = false;
-        }
-      }
-      
-      // 初始揭示：随机选择1个格子显示鸽子
-      const pigeonCells = [];
-      for (let r = 0; r < state.boardSize; r++) {
-        for (let c = 0; c < state.boardSize; c++) {
-          if (state.solution[r][c]) pigeonCells.push([r, c]);
-        }
-      }
-      
-      if (pigeonCells.length > 0) {
-        const [r, c] = pigeonCells[Math.floor(Math.random() * pigeonCells.length)];
-        state.playerBoard[r][c] = true;
-      }
-      
-      saveData();
-      showScreen('game');
-      renderBoard();
-      updateUI();
-    }
-    
-    // ============================================
-    // 渲染棋盘
-    // ============================================
-    function renderBoard() {
-      boardEl.innerHTML = '';
-      boardEl.style.gridTemplateColumns = `repeat(${state.boardSize}, 1fr)`;
-      
-      for (let r = 0; r < state.boardSize; r++) {
-        for (let c = 0; c < state.boardSize; c++) {
-          const cell = document.createElement('div');
-          const regionId = state.regions[r][c] % 8;
-          cell.className = `cell region-${regionId}`;
-          cell.dataset.row = r;
-          cell.dataset.col = c;
-          
-          if (state.playerBoard[r][c]) {
-            cell.classList.add('pigeon');
-          } else if (state.excluded[r][c]) {
-            cell.classList.add('excluded');
-          }
-          
-          cell.addEventListener('click', () => handleCellClick(r, c));
-          
-          boardEl.appendChild(cell);
-        }
-      }
-      
-      document.getElementById('btnUndo').disabled = state.history.length === 0;
-    }
-    
-    // ============================================
-    // 交互处理
-    // ============================================
-    function handleCellClick(row, col) {
-      if (!state.isPlaying) return;
-      
-      const key = `${row},${col}`;
-      
-      if (clickData.cell === key && clickData.count > 0) {
-        // 第二次点击 - 双击 - 放置鸽子
-        clearTimeout(clickData.timer);
-        clickData.count = 0;
-        clickData.cell = null;
-        clickData.timer = null;
-        doPlace(row, col);
-      } else {
-        // 第一次点击 - 启动定时器
-        clearTimeout(clickData.timer);
-        clickData.cell = key;
-        clickData.count = 1;
-        clickData.timer = setTimeout(() => {
-          // 定时器到期 = 单击 = 排除
-          doExclude(row, col);
-          clickData.count = 0;
-          clickData.cell = null;
-          clickData.timer = null;
-        }, CONFIG.DOUBLE_CLICK_DELAY);
-      }
-    }
-    
-    /**
-     * 单击：排除格子
-     */
-    function doExclude(row, col) {
-      if (!state.isPlaying) return;
-      if (state.playerBoard[row][col]) return; // 已有鸽子不能排除
-      
-      // 切换排除状态
-      state.excluded[row][col] = !state.excluded[row][col];
-      
-      if (state.excluded[row][col]) {
-        state.history.push({ type: 'exclude', row, col });
-      } else {
-        state.history.push({ type: 'unexclude', row, col });
-      }
-      
-      renderBoard();
-    }
-    
-    /**
-     * 双击：放置鸽子
-     */
-    function doPlace(row, col) {
-      if (!state.isPlaying) return;
-      
-      // 如果已被排除，先取消排除
-      if (state.excluded[row][col]) {
-        state.excluded[row][col] = false;
-        state.history.push({ type: 'unexclude', row, col });
-      }
-      
-      // 如果已有鸽子，移除
-      if (state.playerBoard[row][col]) {
-        state.playerBoard[row][col] = false;
-        state.history.push({ type: 'remove', row, col });
-        renderBoard();
-        return;
-      }
-      
-      // 检查是否正确
-      if (!state.solution[row][col]) {
-        // 错误！
-        state.errorCount++;
-        updateUI();
-        
-        const cellIndex = row * state.boardSize + col;
-        const cells = boardEl.children;
-        if (cells[cellIndex]) {
-          cells[cellIndex].classList.add('wrong');
-          setTimeout(() => cells[cellIndex].classList.remove('wrong'), 300);
-        }
-        
-        showToast(`💔 错误！剩余 ${CONFIG.MAX_ERRORS - state.errorCount} 次机会`);
-        
-        if (state.errorCount >= CONFIG.MAX_ERRORS) {
-          state.isPlaying = false;
-          document.getElementById('failOverlay').classList.add('show');
-        }
-        return;
-      }
-      
-      // 正确放置
-      state.playerBoard[row][col] = true;
-      state.history.push({ type: 'place', row, col });
-      
-      const cellIndex = row * state.boardSize + col;
-      const cells = boardEl.children;
-      if (cells[cellIndex]) {
-        cells[cellIndex].classList.add('correct');
-        setTimeout(() => cells[cellIndex].classList.remove('correct'), 300);
-      }
-      
-      renderBoard();
-      showToast('🎉 正确!');
-      
-      // 检查胜利
-      if (checkWin()) {
-        state.isPlaying = false;
-        state.level++;
-        saveData();
-        document.getElementById('winOverlay').classList.add('show');
-      }
-    }
-    
-    /**
-     * 检查是否胜利
-     */
-    function checkWin() {
-      for (let r = 0; r < state.boardSize; r++) {
-        for (let c = 0; c < state.boardSize; c++) {
-          if (state.solution[r][c] !== state.playerBoard[r][c]) {
-            return false;
-          }
-        }
-      }
-      return true;
-    }
-    
-    // ============================================
-    // 控制功能
-    // ============================================
-    function undo() {
-      if (state.history.length === 0 || !state.isPlaying) return;
-      
-      const last = state.history.pop();
-      if (last.type === 'exclude') {
-        state.excluded[last.row][last.col] = false;
-      } else if (last.type === 'unexclude') {
-        state.excluded[last.row][last.col] = true;
-      } else if (last.type === 'place') {
-        state.playerBoard[last.row][last.col] = false;
-      } else if (last.type === 'remove') {
-        state.playerBoard[last.row][last.col] = true;
-      }
-      
-      renderBoard();
-      showToast('↩ 已撤销');
-    }
-    
-    function resetLevel() {
-      if (!state.isPlaying) return;
-      
-      // 重置玩家棋盘，但保留初始揭示的鸽子
-      for (let r = 0; r < state.boardSize; r++) {
-        for (let c = 0; c < state.boardSize; c++) {
-          state.playerBoard[r][c] = false;
-          state.excluded[r][c] = false;
-        }
-      }
-      
-      // 重新放置初始揭示的鸽子
-      const pigeonCells = [];
-      for (let r = 0; r < state.boardSize; r++) {
-        for (let c = 0; c < state.boardSize; c++) {
-          if (state.solution[r][c]) pigeonCells.push([r, c]);
-        }
-      }
-      
-      if (pigeonCells.length > 0) {
-        const [r, c] = pigeonCells[Math.floor(Math.random() * pigeonCells.length)];
-        state.playerBoard[r][c] = true;
-      }
-      
-      state.errorCount = 0;
-      state.history = [];
-      
-      updateUI();
-      renderBoard();
-      showToast('🔄 已重置');
-    }
-    
-    // ============================================
-    // 初始化
-    // ============================================
-    function init() {
-      // 恢复体力
-      const saved = loadData();
-      state.level = saved.level;
-      state.energy = saved.energy;
-      state.lastEnergyTime = saved.lastEnergyTime;
-      recoverEnergy();
-      
-      // 按钮事件
-      document.getElementById('btnPlay').onclick = () => {
-        if (state.energy < CONFIG.ENERGY_COST) {
-          document.getElementById('noEnergyOverlay').classList.add('show');
-        } else {
-          state.level = 1;
-          startLevel();
-        }
-      };
-      
-      document.getElementById('btnContinue').onclick = () => {
-        if (state.energy < CONFIG.ENERGY_COST) {
-          document.getElementById('noEnergyOverlay').classList.add('show');
-        } else {
-          startLevel();
-        }
-      };
-      
-      document.getElementById('btnUndo').onclick = undo;
-      document.getElementById('btnReset').onclick = resetLevel;
-      document.getElementById('btnMenu').onclick = () => {
-        document.getElementById('winOverlay').classList.remove('show');
-        document.getElementById('failOverlay').classList.remove('show');
-        showScreen('menu');
-      };
-      
-      // 胜利弹窗
-      document.getElementById('btnNext').onclick = () => {
-        document.getElementById('winOverlay').classList.remove('show');
-        if (state.energy < CONFIG.ENERGY_COST) {
-          document.getElementById('noEnergyOverlay').classList.add('show');
-        } else {
-          startLevel();
-        }
-      };
-      
-      // 失败弹窗
-      document.getElementById('btnRetry').onclick = () => {
-        document.getElementById('failOverlay').classList.remove('show');
-        if (state.energy < CONFIG.ENERGY_COST) {
-          document.getElementById('noEnergyOverlay').classList.add('show');
-          showScreen('menu');
-        } else {
-          startLevel();
-        }
-      };
-      
-      document.getElementById('btnFailMenu').onclick = () => {
-        document.getElementById('failOverlay').classList.remove('show');
-        showScreen('menu');
-      };
-      
-      // 体力不足弹窗
-      document.getElementById('btnNoEnergy').onclick = () => {
-        document.getElementById('noEnergyOverlay').classList.remove('show');
-        showScreen('menu');
-      };
-      
-      showScreen('menu');
-    }
-    
-    init();
-  </script>
 </body>
 </html>
